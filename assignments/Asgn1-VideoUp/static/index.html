@@ -97,7 +97,7 @@ span.borderRadio { padding-left: 3em;}
 ul.borderRadio  {display: inline; margin: 0; padding: 0; list-style-type: none;}
 li.borderRadio { display: inline;}
 
-#error-panel { margin: 3em 0 3em 0; border: 3px solid #F00;}
+#error-panel { margin: 2em 0 2em 0; border: 3px solid #F00;}
 #error-scroll { margin: 0.5em 0 0 0; height: 10em; overflow: auto;}
 #error-table {width: 100%}
 
@@ -350,7 +350,7 @@ function ViewModel() {
 	}
 
 	self.playVideo = function(v, e) {
-		if (! e.ctrlKey){
+		if (! e.ctrlKey) {
 			if (self.playingVideo() != v.dataUrl()) self.playingVideo(v.dataUrl()); // play changed url
 			else if (! self.showingVideo()) document.getElementById('video-player').play(); //play paused video
 			else document.getElementById('video-player').load(); // if user clicks same url while video is showing, replay from start
@@ -385,6 +385,18 @@ function ViewModel() {
 	self.hideVideo = function() {
 		self.showingVideo(false); 
 		document.getElementById('video-player').pause();
+	}
+	
+	
+	self.nonExistentVideo = ko.mapping.fromJS(new self.Video(), self.mapping);
+	self.nonExistentVideo.dataUrl("/video/0/data");
+	
+	self.postNonExistentVideo = function() {
+		self.showUploadForm(self.nonExistentVideo);
+	}
+	
+	self.getNonExistentVideo = function() {
+		window.open(self.nonExistentVideo.dataUrl());
 	}
 	
 	self.refreshVideos();
@@ -462,6 +474,16 @@ ko.applyBindings(new ViewModel());
 			<li class="borderRadio"><input type="radio" name="borderstyleGroup" value="x" data-bind="checked: borderStyleCss" /> Standard</li>
 			</ul>
 		</span>
+	</div>
+	
+	<div id="test-controls">
+		<button data-bind="click: getNonExistentVideo" title="Open to /video/0/data in new window">
+		GET non-existing video
+		</button>
+		<button data-bind="click: postNonExistentVideo" title="Post to /video/0/data">
+		POST non-existing video
+		</button>
+
 	</div>
 	
 	<div id="error-panel" data-bind="visible: errors().length != 0">
