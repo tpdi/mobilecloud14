@@ -388,16 +388,25 @@ function ViewModel() {
 	}
 	
 	
-	self.nonExistentVideo = ko.mapping.fromJS(new self.Video(), self.mapping);
-	self.nonExistentVideo.dataUrl("/video/0/data");
-	
-	self.postNonExistentVideo = function() {
-		self.showUploadForm(self.nonExistentVideo);
+	self.makeNonExistentVideo = function() {
+		var nonExistentVideo = ko.mapping.fromJS(new self.Video(), self.mapping);
+		nonExistentVideo.dataUrl("/video/0/data");
+		nonExistentVideo.id(0);
+		return nonExistentVideo;
 	}
 	
-	self.getNonExistentVideo = function() {
-		window.open(self.nonExistentVideo.dataUrl());
+	self.postNonExistentVideoMetadata = function() {
+		self.updateVideo(self.makeNonExistentVideo()) ;
 	}
+	
+	self.postNonExistentVideoData = function() {
+		self.showUploadForm(self.makeNonExistentVideo());
+	}
+	
+	self.getNonExistentVideoData = function() {
+		window.open(self.makeNonExistentVideo().dataUrl());
+	}
+	
 	
 	self.refreshVideos();
 }
@@ -477,11 +486,15 @@ ko.applyBindings(new ViewModel());
 	</div>
 	
 	<div id="test-controls">
-		<button data-bind="click: getNonExistentVideo" title="Open to /video/0/data in new window">
-		GET non-existing video
+		<h4>Test functions</h4>
+		<button data-bind="click: postNonExistentVideoMetadata" title="Post to /video with id = 0">
+		POST non-existing video metadata
 		</button>
-		<button data-bind="click: postNonExistentVideo" title="Post to /video/0/data">
-		POST non-existing video
+		<button data-bind="click: getNonExistentVideoData" title="Open /video/0/data in new window">
+		GET non-existing video data
+		</button>
+		<button data-bind="click: postNonExistentVideoData" title="Upload to /video/0/data">
+		Post non-existing video data
 		</button>
 
 	</div>
